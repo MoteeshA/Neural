@@ -1,215 +1,666 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Opportunity Radar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AI Radar Pro · Opportunity Intelligence</title>
+    
+    <!-- Font Awesome 6 + Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #f0f2f5;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* NAVBAR */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #eff3f8 100%);
+            color: #0f172a;
+        }
+
+        /* Modern glass-navbar */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 40px;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #111;
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            background: linear-gradient(145deg, #2563eb, #1e40af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 28px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 28px;
         }
 
         .menu a {
-            margin: 0 15px;
             text-decoration: none;
-            color: #555;
             font-weight: 500;
-            transition: 0.3s;
+            color: #334155;
+            transition: 0.2s;
+            font-size: 15px;
         }
 
         .menu a:hover {
-            color: #000;
+            color: #2563eb;
         }
 
-        /* SEARCH */
         .search-box {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 4px 4px 4px 18px;
+            border-radius: 48px;
+            align-items: center;
+            backdrop-filter: blur(4px);
         }
 
         .search-box input {
-            padding: 10px 15px;
-            border-radius: 25px;
+            background: transparent;
             border: none;
+            padding: 10px 0;
+            font-size: 14px;
+            width: 180px;
             outline: none;
-            width: 200px;
-            background: #f1f3f6;
+            font-weight: 500;
         }
 
         .search-box button {
-            padding: 10px 16px;
+            background: #0f172a;
             border: none;
-            border-radius: 25px;
-            background: #111;
+            padding: 8px 20px;
+            border-radius: 40px;
             color: white;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .search-box button:hover {
-            background: #333;
+            background: #1e293b;
+            transform: scale(0.97);
         }
 
-        /* CONTENT */
+        /* Container */
         .container {
-            padding: 40px;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 32px 36px;
         }
 
-        h2 {
-            margin-bottom: 5px;
-            color: #111;
+        /* Header area */
+        .hero-section {
+            margin-bottom: 32px;
         }
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 25px;
+        .hero-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #0f172a, #2d3a5e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        /* SCROLLABLE GRID */
-        .grid-wrapper {
-            max-height: 70vh;
-            overflow-y: auto;
-            padding-right: 10px;
+        .hero-section .subtitle {
+            color: #475569;
+            margin-top: 8px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
+        /* FILTER CHIPS (modern) */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 28px 0 28px 0;
+        }
+
+        .filters button {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #1e293b;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .filters button i {
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .filters button.active {
+            background: #0f172a;
+            color: white;
+            border-color: #0f172a;
+            box-shadow: 0 8px 18px -6px rgba(15,23,42,0.25);
+        }
+
+        /* STAT CARDS (modern metrics) */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 28px;
+            padding: 22px 20px;
+            transition: all 0.2s;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            background: white;
+            border-color: #cbd5e1;
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5b6e8c;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 38px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        /* GRID (modern cards) */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
         }
 
-        /* CARD */
+        /* CARD premium design */
         .card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: 0.3s;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 22px 24px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid #eef2ff;
+            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            transform: translateY(-6px);
+            border-color: #cbdffc;
+            box-shadow: 0 24px 36px -14px rgba(0, 0, 0, 0.12);
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
         }
 
         .stock {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1e1f2c, #0f172a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .price {
-            color: #555;
-            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            color: #0f172a;
         }
 
-        .score {
+        .price small {
+            font-size: 12px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .details-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 14px 0 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .details-row span:first-child {
+            color: #5b6e8c;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .details-row span:last-child {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* signal badges */
+        .signal-badge {
             display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            background: #e6f7ee;
-            color: #0a8f4c;
-            font-weight: 600;
-            font-size: 14px;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            letter-spacing: 0.3px;
+            margin: 10px 0 8px 0;
         }
 
-        .signals {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
+        .buy {
+            background: #e6f7ec;
+            color: #15803d;
+            border-left: 3px solid #22c55e;
+        }
+
+        .sell {
+            background: #fee9e6;
+            color: #b91c1c;
+            border-left: 3px solid #ef4444;
+        }
+
+        .watch {
+            background: #fffbeb;
+            color: #b45309;
+            border-left: 3px solid #f59e0b;
+        }
+
+        /* pattern & confidence chips */
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .pattern {
+            background: #eef2ff;
+            color: #1e3a8a;
+        }
+
+        .confidence {
+            background: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        /* Risk Box (modern) */
+        .risk-box {
+            margin: 16px 0 12px;
+            background: #f8fafd;
+            padding: 12px 14px;
+            border-radius: 20px;
+            border: 1px solid #e9eef3;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .target {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .sl {
+            font-weight: 700;
+            color: #dc2626;
         }
 
         .insight {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.45;
+            background: #fefce8;
+            padding: 10px 12px;
+            border-radius: 18px;
+            margin-top: 12px;
+            border-left: 3px solid #facc15;
         }
 
-        /* EMPTY STATE */
-        .empty {
+        /* empty state */
+        .no-results {
             text-align: center;
-            color: #888;
-            margin-top: 50px;
+            padding: 60px;
+            background: white;
+            border-radius: 48px;
+            color: #64748b;
         }
 
+        a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 12px 20px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .search-box input {
+                width: 130px;
+            }
+            .stat-value {
+                font-size: 28px;
+            }
+        }
     </style>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="logo"> AI Radar</div>
+<div class="navbar">
+    <div class="logo">
+        <i class="fas fa-chart-line"></i> AI Radar Pro
+    </div>
+    <div class="menu">
+        <a href="#"><i class="fas fa-chart-simple"></i> Live</a>
+        <a href="#"><i class="fas fa-bolt"></i> Opportunities</a>
+        <a href="#"><i class="fas fa-robot"></i> AI Labs</a>
+    </div>
+    <div class="search-box">
+        <i class="fas fa-search" style="color:#94a3b8;"></i>
+        <input id="searchInput" type="text" placeholder="Search symbol...">
+        <button onclick="searchStock()"><i class="fas fa-arrow-right"></i> Analyze</button>
+    </div>
+</div>
 
-        <div class="menu">
-            <a href="#">Home</a>
-            <a href="#">Opportunities</a>
-            <a href="#">Insights</a>
-        </div>
-
-        <div class="search-box">
-            <input type="text" placeholder="Search stock...">
-            <button onclick="location.reload()">Refresh</button>
+<div class="container">
+    <div class="hero-section">
+        <h2><i class="fas fa-microchip"></i> AI Opportunity Radar</h2>
+        <div class="subtitle">
+            <span><i class="fas fa-chart-line" style="color:#3b82f6;"></i> Neural signals · Risk-adjusted targets</span>
+            <span><i class="fas fa-clock"></i> Real-time insight engine</span>
         </div>
     </div>
 
-    <!-- CONTENT -->
-    <div class="container">
-        <h2>Top Opportunities</h2>
-        <div class="subtitle">
-            Showing {{ data|length }} high-potential stocks detected by AI scanner
+    <!-- FILTER BUTTONS -->
+    <div class="filters">
+        <button id="filterAll" class="active" onclick="filterCards('ALL')"><i class="fas fa-layer-group"></i> All Signals</button>
+        <button id="filterBuy" onclick="filterCards('BUY')"><i class="fas fa-arrow-up"></i> Strong BUY</button>
+        <button id="filterSell" onclick="filterCards('SELL')"><i class="fas fa-arrow-down"></i> SELL</button>
+        <button id="filterWatch" onclick="filterCards('WATCH')"><i class="fas fa-eye"></i> WATCH</button>
+    </div>
+
+    <!-- STATS PANEL with dynamic data -->
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-title"><i class="fas fa-chart-line"></i> Total Stocks</div>
+            <div class="stat-value" id="totalStocks">0</div>
         </div>
+        <div class="stat-box">
+            <div class="stat-title"><i class="fas fa-chart-simple"></i> Avg. AI Score</div>
+            <div class="stat-value" id="avgScore">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-title"><i class="fas fa-bullhorn"></i> BUY Signals</div>
+            <div class="stat-value" id="buyCount">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-title"><i class="fas fa-chart-line"></i> Top Momentum</div>
+            <div class="stat-value" id="topScore">—</div>
+        </div>
+    </div>
 
-        {% if data|length == 0 %}
-            <div class="empty">
-                No strong opportunities found right now 🚫<br>
-                Try refreshing later.
-            </div>
-        {% else %}
-        <div class="grid-wrapper">
-            <div class="grid">
-                {% for stock in data %}
-                <div class="card">
+    <!-- CARDS GRID -->
+    <div class="grid" id="stockGrid">
+        {% for stock in data %}
+        <a href="/stock/{{ stock.stock }}" class="card-link">
+            <div class="card" data-signal="{{ stock.signals }}" data-score="{{ stock.score }}">
+                <div class="stock-header">
                     <div class="stock">{{ stock.stock }}</div>
-                    <div class="price">₹{{ stock.price }}</div>
+                    <div class="price">₹{{ "%.2f"|format(stock.price) }}<small></small></div>
+                </div>
 
-                    <div class="score">Score: {{ stock.score }}</div>
+                <div class="details-row">
+                    <span><i class="fas fa-chart-simple"></i> AI Score</span>
+                    <span>{{ stock.score }} / 100</span>
+                </div>
+                <div class="details-row">
+                    <span><i class="fas fa-microchip"></i> Confidence</span>
+                    <span>{{ stock.confidence }}%</span>
+                </div>
 
-                    <div class="signals">
-                        Signals: {{ stock.signals }}
+                <div class="badge-group">
+                    <div class="badge pattern">
+                        <i class="fas fa-waveform"></i> {{ stock.pattern }}
                     </div>
-
-                    <div class="insight">
-                        <b>Insight:</b> Strong activity detected based on technical signals.
+                    <div class="badge confidence">
+                        <i class="fas fa-chart-line"></i> AI Precision
                     </div>
                 </div>
-                {% endfor %}
+
+                <div class="signal-badge 
+                    {% if stock.signals == 'BUY' %}buy
+                    {% elif stock.signals == 'SELL' %}sell
+                    {% else %}watch
+                    {% endif %}
+                ">
+                    <i class="fas {% if stock.signals == 'BUY' %}fa-arrow-up{% elif stock.signals == 'SELL' %}fa-arrow-down{% else %}fa-hourglass-half{% endif %}"></i> 
+                    {{ stock.signals }} SIGNAL
+                </div>
+
+                <!-- Risk Box with modern look -->
+                <div class="risk-box">
+                    <span><i class="fas fa-bullseye" style="color:#2563eb;"></i> Target: <span class="target">₹{{ "%.2f"|format(stock.target) }}</span></span>
+                    <span><i class="fas fa-shield-alt" style="color:#dc2626;"></i> Stop Loss: <span class="sl">₹{{ "%.2f"|format(stock.sl) }}</span></span>
+                </div>
+
+                <div class="insight">
+                    <i class="fas fa-lightbulb" style="color:#eab308; margin-right: 6px;"></i> {{ stock.insight }}
+                </div>
             </div>
-        </div>
-        {% endif %}
+        </a>
+        {% endfor %}
     </div>
+</div>
+
+<script>
+    // Helper: update stats based on visible cards (filtered)
+    function updateStats() {
+        let allCards = Array.from(document.querySelectorAll('.card'));
+        let visibleCards = allCards.filter(card => card.style.display !== 'none');
+        
+        let total = visibleCards.length;
+        let totalScore = 0;
+        let buySignals = 0;
+        let maxScore = 0;
+        
+        visibleCards.forEach(card => {
+            let score = parseInt(card.getAttribute('data-score')) || 0;
+            totalScore += score;
+            if (score > maxScore) maxScore = score;
+            
+            let signal = card.getAttribute('data-signal');
+            if (signal === 'BUY') buySignals++;
+        });
+        
+        let avgScoreVal = total === 0 ? 0 : Math.round(totalScore / total);
+        document.getElementById('totalStocks').innerText = total;
+        document.getElementById('avgScore').innerText = avgScoreVal;
+        document.getElementById('buyCount').innerText = buySignals;
+        document.getElementById('topScore').innerHTML = maxScore > 0 ? maxScore : '—';
+    }
+
+    // Improved filtering with animation and active button toggle
+    function filterCards(type) {
+        let cards = document.querySelectorAll(".card");
+        let anyVisible = false;
+        
+        cards.forEach(card => {
+            let signal = card.getAttribute("data-signal");
+            if (type === "ALL" || signal === type) {
+                card.style.display = "block";
+                anyVisible = true;
+                // subtle fade-in effect
+                card.style.opacity = "0";
+                setTimeout(() => { card.style.opacity = "1"; }, 10);
+            } else {
+                card.style.display = "none";
+            }
+        });
+        
+        // Update active class on filter buttons
+        let buttons = document.querySelectorAll(".filters button");
+        buttons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+        
+        if (type === "ALL") document.getElementById("filterAll").classList.add("active");
+        if (type === "BUY") document.getElementById("filterBuy").classList.add("active");
+        if (type === "SELL") document.getElementById("filterSell").classList.add("active");
+        if (type === "WATCH") document.getElementById("filterWatch").classList.add("active");
+        
+        // Update stats after filter
+        updateStats();
+        
+        // show empty state if no visible cards
+        let grid = document.getElementById('stockGrid');
+        let existingEmpty = document.querySelector('.no-results-message');
+        if (!anyVisible) {
+            if (!existingEmpty) {
+                let emptyDiv = document.createElement('div');
+                emptyDiv.className = 'no-results-message';
+                emptyDiv.style.gridColumn = '1/-1';
+                emptyDiv.style.textAlign = 'center';
+                emptyDiv.style.padding = '50px';
+                emptyDiv.style.background = '#fff';
+                emptyDiv.style.borderRadius = '40px';
+                emptyDiv.innerHTML = '<i class="fas fa-radar" style="font-size: 40px; opacity:0.4;"></i><p style="margin-top:12px;">No signals match this filter. Try another view.</p>';
+                grid.appendChild(emptyDiv);
+            }
+        } else {
+            if (existingEmpty) existingEmpty.remove();
+        }
+    }
+    
+    // Search function: redirect with exact symbol
+    function searchStock() {
+        let val = document.getElementById("searchInput").value.trim().toUpperCase();
+        if (val) {
+            window.location.href = "/stock/" + encodeURIComponent(val);
+        } else {
+            // subtle shake effect
+            let inputField = document.getElementById("searchInput");
+            inputField.style.transform = "shake 0.2s";
+            setTimeout(() => { inputField.style.transform = ""; }, 300);
+        }
+    }
+    
+    // Additional filter by pressing Enter key in search
+    document.getElementById("searchInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            searchStock();
+        }
+    });
+    
+    // initial stats update after page loads + slight card effect
+    window.addEventListener('DOMContentLoaded', () => {
+        updateStats();
+        // ensure all cards have smooth entry
+        let cards = document.querySelectorAll('.card');
+        cards.forEach((card, idx) => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(12px)";
+            setTimeout(() => {
+                card.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+                card.style.opacity = "1";
+                card.style.transform = "translateY(0)";
+            }, idx * 40);
+        });
+        
+        // live demo: add hover interaction for navbar
+    });
+    
+    // optional: dynamic filter after search using local filter (client side)
+    window.filterCards = filterCards;
+    window.searchStock = searchStock;
+    
+    // realtime search highlight? just keep redirect.
+    // for full dynamic client-side search (bonus) — but we keep main backend style
+    // additional micro-interaction for filter buttons
+    const style = document.createElement('style');
+    style.innerHTML = ` .card { transition: opacity 0.2s, transform 0.2s; } .no-results-message { animation: fadeIn 0.3s; } @keyframes fadeIn { from { opacity:0; } to { opacity:1; } } `;
+    document.head.appendChild(style);
+</script>
 
 </body>
 </html>

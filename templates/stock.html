@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ symbol }} · AI Radar Pro | Advanced Chart</title>
+    
+    <!-- Plotly + Tailwind + Font Awesome -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Custom Tailwind Override for glass effects -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0f1e, #030617);
+            scroll-behavior: smooth;
+        }
+        
+        /* Modern glassmorphism card effect */
+        .glass-card {
+            background: rgba(15, 25, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 10px 25px -5px rgba(0, 191, 255, 0.2);
+        }
+        
+        /* Signal pulse animation */
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 0px rgba(34,197,94,0); box-shadow: 0 0 0px rgba(34,197,94,0);}
+            100% { text-shadow: 0 0 6px rgba(34,197,94,0.6); box-shadow: 0 0 8px rgba(34,197,94,0.3);}
+        }
+        
+        .signal-buy {
+            background: linear-gradient(135deg, #15803d, #22c55e);
+            box-shadow: 0 0 12px rgba(34,197,94,0.5);
+        }
+        
+        .signal-sell {
+            background: linear-gradient(135deg, #b91c1c, #ef4444);
+            box-shadow: 0 0 12px rgba(239,68,68,0.5);
+        }
+        
+        .signal-hold {
+            background: linear-gradient(135deg, #854d0e, #eab308);
+            box-shadow: 0 0 12px rgba(234,179,8,0.4);
+        }
+        
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .timeframe-btn {
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(71, 85, 105, 0.6);
+        }
+        
+        .timeframe-btn:hover {
+            background: #0284c7;
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+        
+        .insight-text {
+            background: linear-gradient(90deg, #0f172a, #0a0f1f);
+            border-left: 4px solid #38bdf8;
+        }
+        
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 8px;
+        }
+        
+        .chart-container {
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            background: #010514;
+        }
+        
+        .badge-pattern {
+            background: #1e293b;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Modern Navbar with blur -->
+    <nav class="sticky top-0 z-50 backdrop-blur-xl bg-[#020617]/80 border-b border-[#38bdf8]/30 px-5 md:px-10 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center">
+                <i class="fas fa-chart-line text-white text-sm"></i>
+            </div>
+            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">AI Radar Pro</span>
+            <span class="hidden md:inline-block text-xs bg-white/10 px-2 py-0.5 rounded-full ml-2">v2.0 · Neural</span>
+        </div>
+        <a href="/" class="flex items-center gap-2 bg-slate-800/70 hover:bg-slate-700 transition px-4 py-2 rounded-full text-sm font-medium border border-white/10 backdrop-blur-sm">
+            <i class="fas fa-arrow-left text-cyan-300 text-xs"></i> Dashboard
+        </a>
+    </nav>
+
+    <main class="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6">
+        
+        <!-- Hero / Title Section -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-3">
+            <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 class="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">{{ symbol }}</h1>
+                    <span class="text-xs font-mono bg-black/40 px-2 py-1 rounded-md border border-cyan-500/30">NYSE/NASDAQ</span>
+                </div>
+                <p class="text-slate-400 text-sm mt-1 flex items-center gap-1"><i class="fas fa-chart-simple text-cyan-400/70"></i> AI-powered multi-timeframe analysis · Live signals</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-500 flex items-center gap-1 justify-end"><i class="far fa-clock"></i> Real-time synthetic feed</div>
+                <div class="text-xs font-mono text-cyan-300">{{ dates[-1] if dates else "latest" }}</div>
+            </div>
+        </div>
+
+        <!-- 🔥 MODERN KPI DASHBOARD - glassmorphic grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            
+            <!-- Signal Card with Dynamic Glow -->
+            <div class="glass-card rounded-2xl p-4 transition-all duration-300 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-white/5 to-transparent rounded-full"></div>
+                <div class="text-slate-400 text-xs uppercase tracking-wider flex items-center gap-1"><i class="fas fa-bolt text-xs"></i> Primary Signal</div>
+                <div class="mt-2">
+                    <span class="text-2xl font-extrabold 
+                        {% if signals[-1] == 'BUY' %}text-green-400 signal-buy px-3 py-1 inline-block rounded-full text-sm shadow-lg{% elif signals[-1] == 'SELL' %}text-red-400 signal-sell px-3 py-1 inline-block rounded-full text-sm shadow-lg{% else %}text-yellow-400 signal-hold px-3 py-1 inline-block rounded-full text-sm shadow-lg{% endif %}
+                        ">
+                        {{ signals[-1] }}
+                    </span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-2">confidence: {{ accuracy }}%</div>
+            </div>
+            
+            <!-- Pattern Recognition -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="text-slate-400 text-xs uppercase tracking-wider"><i class="fas fa-waveform"></i> Pattern</div>
+                <div class="stat-value text-cyan-300 mt-1 text-xl">{{ pattern }}</div>
+                <div class="text-[11px] text-slate-500 mt-1">AI structure</div>
+            </div>
+            
+            <!-- Backtest Profit -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="text-slate-400 text-xs uppercase tracking-wider"><i class="fas fa-chart-line"></i> Simulated P&L</div>
+                <div class="stat-value {% if profit|float >= 0 %}text-emerald-400{% else %}text-rose-400{% endif %} mt-1">
+                    {{ profit }}%
+                </div>
+                <div class="text-[11px] text-slate-500">since inception</div>
+            </div>
+            
+            <!-- RSI with dynamic bar fill -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="text-slate-400 text-xs uppercase tracking-wider"><i class="fas fa-gauge-high"></i> RSI (14)</div>
+                <div class="stat-value text-white mt-1">{{ "%.2f"|format(rsi[-1]) }}</div>
+                <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+                    {% set rsi_val = rsi[-1] %}
+                    <div class="h-1.5 rounded-full {% if rsi_val > 70 %}bg-red-500{% elif rsi_val < 30 %}bg-green-500{% else %}bg-cyan-400{% endif %}" style="width: {{ [100, rsi_val]|min }}%"></div>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-1">{% if rsi[-1] > 70 %}Overbought zone{% elif rsi[-1] < 30 %}Oversold zone{% else %}Neutral momentum{% endif %}</div>
+            </div>
+            
+            <!-- Accuracy / Winrate -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="text-slate-400 text-xs uppercase tracking-wider"><i class="fas fa-brain"></i> Model Accuracy</div>
+                <div class="stat-value text-blue-300 mt-1">{{ accuracy }}%</div>
+                <div class="text-[11px] text-slate-500">rolling validation</div>
+            </div>
+            
+            <!-- volatility / dynamic risk -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="text-slate-400 text-xs uppercase tracking-wider"><i class="fas fa-chart-scatter"></i> Risk Score</div>
+                {% set risk_val = (100 - accuracy|float + ((rsi[-1] - 50)|abs)/5)|round(0) %}
+                <div class="stat-value {% if risk_val < 40 %}text-green-300{% elif risk_val < 70 %}text-yellow-300{% else %}text-red-300{% endif %} mt-1">{{ risk_val|int }}</div>
+                <div class="text-[11px] text-slate-500">volatility adj.</div>
+            </div>
+        </div>
+        
+        <!-- AI Insight Area (elevated) -->
+        <div class="insight-text rounded-xl p-4 mb-7 flex items-start gap-3 shadow-md">
+            <i class="fas fa-robot text-cyan-400 text-xl mt-0.5"></i>
+            <div>
+                <span class="text-xs font-bold text-cyan-300 uppercase tracking-wider">AI insight engine</span>
+                <p class="text-slate-200 text-sm md:text-base leading-relaxed">{{ insight }}</p>
+            </div>
+        </div>
+        
+        <!-- Timeframe Selector + modern tabs style -->
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+            <div class="flex flex-wrap gap-2">
+                <button onclick="changeTF('1mo','1d')" class="timeframe-btn px-5 py-2 rounded-full text-sm font-medium shadow-sm transition-all"><i class="far fa-calendar-alt mr-1"></i>1 Month</button>
+                <button onclick="changeTF('3mo','1d')" class="timeframe-btn px-5 py-2 rounded-full text-sm font-medium"><i class="fas fa-chart-line mr-1"></i>3 Months</button>
+                <button onclick="changeTF('6mo','1d')" class="timeframe-btn px-5 py-2 rounded-full text-sm font-medium"><i class="fas fa-chart-area mr-1"></i>6 Months</button>
+                <button onclick="changeTF('5d','5m')" class="timeframe-btn px-5 py-2 rounded-full text-sm font-medium"><i class="fas fa-clock mr-1"></i>5 Days (5m)</button>
+                <button onclick="changeTF('1mo','1h')" class="timeframe-btn px-5 py-2 rounded-full text-sm font-medium"><i class="fas fa-hourglass-half mr-1"></i>1H Candles</button>
+            </div>
+            <div class="text-xs text-slate-500 bg-slate-900/40 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <i class="fas fa-mouse-pointer text-cyan-400"></i> <span>interactive candlestick</span>
+            </div>
+        </div>
+        
+        <!-- Premium Chart Card -->
+        <div class="chart-container bg-[#010514] shadow-2xl transition-all duration-300">
+            <div id="chart" class="w-full h-[680px] lg:h-[720px]"></div>
+        </div>
+        
+        <!-- extra footer: legend and small note -->
+        <div class="flex flex-wrap justify-between items-center mt-5 text-xs text-slate-500 px-2">
+            <div class="flex gap-4">
+                <span><i class="fas fa-chart-simple text-green-400"></i> Candlestick (OHLC)</span>
+                <span><i class="fas fa-chart-line text-cyan-300"></i> MA20 & EMA9</span>
+                <span><i class="fas fa-chart-bar text-purple-400"></i> Volume</span>
+                <span><i class="fas fa-waveform text-yellow-400"></i> RSI Oscillator</span>
+            </div>
+            <div>
+                <i class="fas fa-chart-simple text-emerald-400"></i> AI entry/exit points (BUY/SELL)
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // ---------- DATA INJECTION FROM FLASK/JINJA ----------
+        var dates = {{ dates|tojson }};
+        var open = {{ open|tojson }};
+        var high = {{ high|tojson }};
+        var low = {{ low|tojson }};
+        var close = {{ close|tojson }};
+        var ma20 = {{ ma20|tojson }};
+        var ema9 = {{ ema9|tojson }};
+        var volume = {{ volume|tojson }};
+        var rsi = {{ rsi|tojson }};
+        var signals = {{ signals|tojson }};
+        
+        // Format dates nicely for tooltips
+        var formattedDates = dates.map(d => new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }));
+        
+        // ---------- PREPARE CANDLESTICK (MODERN STYLE) ----------
+        var candleTrace = {
+            x: dates,
+            open: open,
+            high: high,
+            low: low,
+            close: close,
+            type: 'candlestick',
+            name: 'Price Action',
+            showlegend: true,
+            increasing: { line: { color: '#22c55e', width: 1.5 }, fillcolor: '#22c55e' },
+            decreasing: { line: { color: '#ef4444', width: 1.5 }, fillcolor: '#ef4444' },
+            line: { width: 1 },
+            whiskerwidth: 0.6,
+            hoverlabel: { bgcolor: '#0f172a', font: { color: '#f1f5f9', size: 11 } }
+        };
+        
+        // Moving Average 20
+        var maTrace = {
+            x: dates,
+            y: ma20,
+            type: 'scatter',
+            mode: 'lines',
+            name: 'MA20 (Smooth trend)',
+            line: { color: '#facc15', width: 2.2, dash: 'solid' },
+            opacity: 0.9
+        };
+        
+        // EMA9
+        var emaTrace = {
+            x: dates,
+            y: ema9,
+            type: 'scatter',
+            mode: 'lines',
+            name: 'EMA9 (Fast)',
+            line: { color: '#38bdf8', width: 2, shape: 'spline' },
+            opacity: 0.9
+        };
+        
+        // Volume bars (subplot)
+        var volumeTrace = {
+            x: dates,
+            y: volume,
+            type: 'bar',
+            name: 'Volume',
+            yaxis: 'y2',
+            marker: { color: '#64748b', opacity: 0.7, line: { width: 0 } },
+            hoverinfo: 'y+name'
+        };
+        
+        // RSI trace with overbought/oversold zones (subplot)
+        var rsiTrace = {
+            x: dates,
+            y: rsi,
+            type: 'scatter',
+            mode: 'lines',
+            name: 'RSI (14)',
+            line: { color: '#eab308', width: 2.5 },
+            yaxis: 'y3',
+            fill: 'tozeroy',
+            fillcolor: 'rgba(234,179,8,0.08)'
+        };
+        
+        // Add horizontal lines for RSI boundaries (70/30)
+        var rsiUpper = {
+            x: dates,
+            y: Array(dates.length).fill(70),
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Overbought (70)',
+            line: { color: '#ef4444', width: 1, dash: 'dash' },
+            yaxis: 'y3',
+            showlegend: true
+        };
+        
+        var rsiLower = {
+            x: dates,
+            y: Array(dates.length).fill(30),
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Oversold (30)',
+            line: { color: '#22c55e', width: 1, dash: 'dash' },
+            yaxis: 'y3',
+            showlegend: true
+        };
+        
+        // BUY / SELL Markers (enhanced modern style)
+        var buyMarkers = { x: [], y: [], mode: 'markers', name: 'AI BUY Signal', marker: { symbol: 'triangle-up', size: 12, color: '#22c55e', line: { width: 1, color: '#ffffff' }, opacity: 0.9 } };
+        var sellMarkers = { x: [], y: [], mode: 'markers', name: 'AI SELL Signal', marker: { symbol: 'triangle-down', size: 12, color: '#ef4444', line: { width: 1, color: '#ffffff' }, opacity: 0.9 } };
+        
+        for (let i = 0; i < signals.length; i++) {
+            if (signals[i] === "BUY") {
+                buyMarkers.x.push(dates[i]);
+                buyMarkers.y.push(close[i]);
+            }
+            if (signals[i] === "SELL") {
+                sellMarkers.x.push(dates[i]);
+                sellMarkers.y.push(close[i]);
+            }
+        }
+        
+        // ----- ADVANCED LAYOUT (grid with 3 rows + modern theme)-----
+        var layout = {
+            paper_bgcolor: '#010514',
+            plot_bgcolor: '#010514',
+            font: { family: 'Inter, system-ui, sans-serif', color: '#cbd5e1', size: 11 },
+            title: {
+                text: `<b>{{ symbol }}</b> · Intelligent Technical Overview`,
+                font: { size: 16, color: '#e2e8f0', family: 'Inter' },
+                x: 0.02,
+                xanchor: 'left',
+                y: 0.98
+            },
+            margin: { t: 60, b: 40, l: 55, r: 55 },
+            hovermode: 'x unified',
+            grid: { rows: 3, columns: 1, pattern: 'independent', roworder: 'top to bottom' },
+            
+            // Price chart domain (top 55%)
+            yaxis: { domain: [0.45, 0.94], title: 'Price (USD)', titlefont: { size: 10, color: '#94a3b8' }, gridcolor: '#1e293b', zerolinecolor: '#334155', color: '#cbd5e6' },
+            
+            // Volume domain (middle 18%)
+            yaxis2: { domain: [0.25, 0.42], title: 'Volume', titlefont: { size: 10, color: '#94a3b8' }, gridcolor: '#1e293b', side: 'right' },
+            
+            // RSI domain (bottom 22%)
+            yaxis3: { domain: [0.05, 0.22], title: 'RSI', range: [0, 100], titlefont: { size: 10, color: '#94a3b8' }, gridcolor: '#1e293b', tickvals: [0,30,50,70,100] },
+            
+            legend: { orientation: 'h', yanchor: 'bottom', y: -0.08, xanchor: 'center', x: 0.5, bgcolor: 'rgba(2,6,23,0.7)', bordercolor: '#38bdf880', borderwidth: 0.5, font: { size: 10 } },
+            
+            xaxis: { rangeslider: { visible: false }, type: 'date', gridcolor: '#1f2a44', showgrid: true, tickangle: -30 },
+            xaxis2: { matches: 'x', visible: false },
+            xaxis3: { matches: 'x', visible: false },
+            
+            shapes: [
+                // subtle background zones for RSI
+                { type: 'rect', xref: 'paper', yref: 'y3 domain', x0: 0, y0: 0.7, x1: 1, y1: 1, fillcolor: 'rgba(239,68,68,0.05)', line: { width: 0 }, layer: 'below' },
+                { type: 'rect', xref: 'paper', yref: 'y3 domain', x0: 0, y0: 0, x1: 1, y1: 0.3, fillcolor: 'rgba(34,197,94,0.05)', line: { width: 0 }, layer: 'below' }
+            ],
+            
+            hoverlabel: { bgcolor: '#0f172a', bordercolor: '#38bdf8', font: { size: 11, color: 'white' } },
+            updatemenus: []
+        };
+        
+        // Combine all traces
+        var traces = [candleTrace, maTrace, emaTrace, volumeTrace, rsiTrace, rsiUpper, rsiLower, buyMarkers, sellMarkers];
+        
+        // Apply responsive config + custom modeBar buttons removal for cleaner UI
+        var config = {
+            responsive: true,
+            displayModeBar: true,
+            modeBarButtonsToRemove: ['lasso2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d'],
+            displaylogo: false,
+            toImageButtonOptions: { format: 'svg', filename: 'ai_radar_chart' }
+        };
+        
+        // Plot the chart with modern enhancements
+        Plotly.newPlot('chart', traces, layout, config).then(function() {
+            // post-plot: adjust rangeselector? not needed, we keep clean style
+            var chartDiv = document.getElementById('chart');
+            // add small animation
+            chartDiv.style.opacity = '0';
+            setTimeout(() => { chartDiv.style.transition = 'opacity 0.5s ease'; chartDiv.style.opacity = '1'; }, 100);
+        });
+        
+        // Resize fix on window orientation
+        window.addEventListener('resize', function() {
+            Plotly.relayout('chart', {});
+        });
+        
+        // Timeframe change function (backend integration)
+        function changeTF(tf, interval) {
+            // preserve current symbol from URL context
+            const currentUrl = window.location.pathname;
+            window.location.href = `/stock/{{ symbol }}?tf=${tf}&int=${interval}`;
+        }
+        
+        // Add optional interactive tooltip / dynamic title update
+        function updateActiveButton(activeText) {
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-600', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-slate-800/70');
+            });
+            // could be enhanced but not required for function
+        }
+        
+        // Expose to global
+        window.changeTF = changeTF;
+        
+        // Additional smoothness: show small loading text removed
+        console.log('🔥 AI Radar Pro — Modern Candlestick UI Loaded');
+    </script>
+    
+    <!-- small tooltip style for chart hover consistency -->
+    <style>
+        .modebar {
+            background: #0f172a !important;
+            border-radius: 18px !important;
+            padding: 0 8px !important;
+            border: 1px solid #334155;
+        }
+        .modebar-btn path {
+            fill: #94a3b8;
+        }
+        .modebar-btn:hover path {
+            fill: #38bdf8;
+        }
+        .js-plotly-plot .plotly .main-svg {
+            border-radius: 20px;
+        }
+        g.point text {
+            font-weight: 600;
+        }
+    </style>
+</body>
+</html>
