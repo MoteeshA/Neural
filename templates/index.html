@@ -78,11 +78,22 @@
         }
 
         h2 {
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             color: #111;
         }
 
-        /* CARD GRID */
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* SCROLLABLE GRID */
+        .grid-wrapper {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -136,6 +147,13 @@
             color: #333;
         }
 
+        /* EMPTY STATE */
+        .empty {
+            text-align: center;
+            color: #888;
+            margin-top: 50px;
+        }
+
     </style>
 </head>
 
@@ -160,25 +178,37 @@
     <!-- CONTENT -->
     <div class="container">
         <h2>Top Opportunities</h2>
-
-        <div class="grid">
-            {% for stock in data %}
-            <div class="card">
-                <div class="stock">{{ stock.stock }}</div>
-                <div class="price">₹{{ stock.price }}</div>
-
-                <div class="score">Score: {{ stock.score }}</div>
-
-                <div class="signals">
-                    Signals: {{ stock.signals }}
-                </div>
-
-                <div class="insight">
-                    <b>Insight:</b> Strong activity detected based on technical signals.
-                </div>
-            </div>
-            {% endfor %}
+        <div class="subtitle">
+            Showing {{ data|length }} high-potential stocks detected by AI scanner
         </div>
+
+        {% if data|length == 0 %}
+            <div class="empty">
+                No strong opportunities found right now 🚫<br>
+                Try refreshing later.
+            </div>
+        {% else %}
+        <div class="grid-wrapper">
+            <div class="grid">
+                {% for stock in data %}
+                <div class="card">
+                    <div class="stock">{{ stock.stock }}</div>
+                    <div class="price">₹{{ stock.price }}</div>
+
+                    <div class="score">Score: {{ stock.score }}</div>
+
+                    <div class="signals">
+                        Signals: {{ stock.signals }}
+                    </div>
+
+                    <div class="insight">
+                        <b>Insight:</b> Strong activity detected based on technical signals.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
 </body>
